@@ -702,6 +702,19 @@ h3{ font-size:20px; }
   justify-content:center;
   margin-top:6px;
 }
+.form-actions{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+.btn-whatsapp{
+  background:#25D366;
+  border-color:#25D366;
+  color:#062b16;
+  font-weight:600;
+}
+.btn-whatsapp:hover{ background:#2fe378; border-color:#2fe378; }
+.btn-email-alt{
+  width:100%;
+  justify-content:center;
+  background:transparent;
+}
 .form-note{ font-size:12.5px; color:var(--text-2); margin-top:14px; text-align:center; }
 .form-success{
   display:none;
@@ -937,7 +950,7 @@ footer{
           <h2 class="reveal">Profil</h2>
           <p class="lede reveal">Ingénieur logiciel avec 5+ années d'expérience dans la conception et le déploiement d'applications web/mobiles. Spécialisé en Python, Laravel, React et intelligence artificielle. Capacité à piloter un projet de l'analyse au déploiement production. Expérience en intégration de paiements, cloud AWS et administration Linux.</p>
         </div>
-        <a href="https://drive.google.com/file/d/1gqpMwfk57wE2oDddUJmCuzjQqsgJHsB3/view?usp=sharingf" download class="btn dl-btn reveal">
+        <a href="Paul_Pivot_Tjade_Tjade_CV.pdf" download class="btn dl-btn reveal">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
           Télécharger en PDF
         </a>
@@ -1251,8 +1264,9 @@ footer{
 
         <div class="form-wrap reveal">
           <div class="form-title">// demande de devis ou prise de rendez-vous</div>
-          <div class="form-success" id="formSuccess">✓ Votre client mail va s'ouvrir avec votre message pré-rempli. Vous pouvez aussi écrire directement à paulpivott@gmail.com.</div>
+          <div class="form-success" id="formSuccess">✓ WhatsApp va s'ouvrir avec votre message pré-rempli. Il ne vous restera qu'à appuyer sur envoyer.</div>
           <form id="quoteForm" action="https://formspree.io/f/xykqqler" method="POST">
+            <input type="hidden" name="_subject" value="Nouvelle demande — portfolio Paul Pivot">
             <div class="form-grid">
               <div class="field">
                 <label for="f-name">Nom complet</label>
@@ -1305,11 +1319,17 @@ footer{
                 <textarea id="f-message" name="message" required placeholder="Contexte, objectifs, délais..."></textarea>
               </div>
             </div>
-            <button type="submit" class="btn btn-primary form-submit">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-              Envoyer la demande
-            </button>
-            <p class="form-note">En cliquant sur envoyer, votre client mail par défaut s'ouvrira avec les informations pré-remplies.</p>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-whatsapp form-submit">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.5-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.7 1.5 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.4-.5-4.8-1.3l-.3-.2-3.3.9.9-3.2-.2-.3C3.5 14.6 3 13.3 3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9.2z"/></svg>
+                Envoyer sur WhatsApp
+              </button>
+              <button type="button" id="emailAltBtn" class="btn btn-email-alt">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5h18v14H3z"/><path d="M3 6l9 7 9-7"/></svg>
+                Ou envoyer directement par email
+              </button>
+            </div>
+            <p class="form-note">WhatsApp ouvre une conversation pré-remplie · l'email est envoyé directement à Paul, sans ouvrir votre client mail.</p>
           </form>
         </div>
       </div>
@@ -1495,37 +1515,93 @@ overlay.addEventListener('click', (e) => { if(e.target === overlay) closeModal()
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
 modalContactBtn.addEventListener('click', (e) => { e.preventDefault(); closeModal(); goTo('contact'); });
 
-/* ---------- contact form -> mailto ---------- */
+/* ---------- contact form -> WhatsApp / email ---------- */
 const form = document.getElementById('quoteForm');
 const formSuccess = document.getElementById('formSuccess');
+const emailAltBtn = document.getElementById('emailAltBtn');
+const WHATSAPP_NUMBER = '237656397061'; // format international sans le "+"
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xykqqler';
+
+function readFormValues(){
+  const fd = new FormData(form);
+  return {
+    name: fd.get('name') || '',
+    email: fd.get('email') || '',
+    phone: fd.get('phone') || '',
+    type: fd.get('type') || '',
+    project: fd.get('project') || '',
+    budget: fd.get('budget') || '',
+    date: fd.get('date') || '',
+    message: fd.get('message') || ''
+  };
+}
+
+function buildMessage(v){
+  return `👋 Bonjour Paul Pivot,
+
+    Je vous contacte via votre portfolio.
+    
+    ━━━━━━━━━━━━━━
+    📋 *INFORMATIONS*
+    ━━━━━━━━━━━━━━
+    
+    👤 *Nom* : ${v.name}
+    📧 *Email* : ${v.email}
+    📱 *Téléphone* : ${v.phone || 'Non précisé'}
+    
+    📝 *Type de demande* : ${v.type}
+    💼 *Type de projet* : ${v.project}
+    💰 *Budget estimé* : ${v.budget}
+    📅 *Date souhaitée* : ${v.date || 'Non précisée'}
+    
+    ━━━━━━━━━━━━━━
+    💬 *MESSAGE*
+    ━━━━━━━━━━━━━━
+    
+    ${v.message}
+    
+Merci d'avance pour votre retour.`;
+}
+  
 form.addEventListener('submit', function(e){
   e.preventDefault();
-  const fd = new FormData(form);
-  const name = fd.get('name') || '';
-  const email = fd.get('email') || '';
-  const phone = fd.get('phone') || '';
-  const type = fd.get('type') || '';
-  const project = fd.get('project') || '';
-  const budget = fd.get('budget') || '';
-  const date = fd.get('date') || '';
-  const message = fd.get('message') || '';
-
-  const subject = `${type} — ${name}`;
-  const body =
-`Nom : ${name}
-Email : ${email}
-Téléphone : ${phone}
-Type de demande : ${type}
-Type de projet : ${project}
-Budget estimé : ${budget}
-Date souhaitée pour un échange : ${date || 'non précisée'}
-
-Message :
-${message}`;
-
-  const mailto = `mailto:paulpivott@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  if(!form.reportValidity()) return;
+  const v = readFormValues();
+  const text = buildMessage(v);
+  const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+  formSuccess.textContent = "✓ WhatsApp va s'ouvrir avec votre message pré-rempli. Il ne vous restera qu'à appuyer sur envoyer.";
   formSuccess.classList.add('show');
-  window.location.href = mailto;
+  window.open(waUrl, '_blank', 'noopener');
+});
+
+emailAltBtn.addEventListener('click', async function(){
+  if(!form.reportValidity()) return;
+  const v = readFormValues();
+  const originalLabel = emailAltBtn.innerHTML;
+  emailAltBtn.disabled = true;
+  emailAltBtn.innerHTML = 'Envoi en cours…';
+
+  try{
+    const res = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: new FormData(form)
+    });
+    if(res.ok){
+      formSuccess.textContent = "✓ Message envoyé directement à Paul Pivot par email. Il vous répondra sous 24 à 48h.";
+      formSuccess.classList.add('show');
+      form.reset();
+    } else {
+      formSuccess.textContent = "⚠ L'envoi a échoué. Réessayez, ou contactez directement paulpivott@gmail.com.";
+      formSuccess.classList.add('show');
+    }
+  } catch(err){
+    formSuccess.textContent = "⚠ Connexion impossible. Réessayez, ou contactez directement paulpivott@gmail.com.";
+    formSuccess.classList.add('show');
+  } finally {
+    emailAltBtn.disabled = false;
+    emailAltBtn.innerHTML = originalLabel;
+  }
 });
 </script>
 
