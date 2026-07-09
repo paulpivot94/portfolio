@@ -1539,30 +1539,29 @@ function readFormValues(){
 function buildMessage(v){
   return `👋 Bonjour Paul Pivot,
 
-    Je vous contacte via votre portfolio.
-    
-    ━━━━━━━━━━━━━━
-    📋 *INFORMATIONS*
-    ━━━━━━━━━━━━━━
-    
-    👤 *Nom* : ${v.name}
-    📧 *Email* : ${v.email}
-    📱 *Téléphone* : ${v.phone || 'Non précisé'}
-    
-    📝 *Type de demande* : ${v.type}
-    💼 *Type de projet* : ${v.project}
-    💰 *Budget estimé* : ${v.budget}
-    📅 *Date souhaitée* : ${v.date || 'Non précisée'}
-    
-    ━━━━━━━━━━━━━━
-    💬 *MESSAGE*
-    ━━━━━━━━━━━━━━
-    
-    ${v.message}
-    
+Je vous contacte via votre portfolio.
+
+━━━━━━━━━━━━━━
+📋 *INFORMATIONS*
+━━━━━━━━━━━━━━
+
+👤 *Nom* : ${v.name}
+📧 *Email* : ${v.email}
+📱 *Téléphone* : ${v.phone || 'Non précisé'}
+
+📝 *Type de demande* : ${v.type}
+💼 *Type de projet* : ${v.project}
+💰 *Budget estimé* : ${v.budget}
+📅 *Date souhaitée* : ${v.date || 'Non précisée'}
+
+━━━━━━━━━━━━━━
+💬 *MESSAGE*
+━━━━━━━━━━━━━━
+
+${v.message}
+
 Merci d'avance pour votre retour.`;
 }
-  
 form.addEventListener('submit', function(e){
   e.preventDefault();
   if(!form.reportValidity()) return;
@@ -1588,7 +1587,7 @@ emailAltBtn.addEventListener('click', async function(){
       body: new FormData(form)
     });
     if(res.ok){
-      formSuccess.textContent = "✓ Message envoyé directement à Paul Pivot par email. Il vous répondra sous 24 à 48h.";
+      formSuccess.textContent = "✓ Message envoyé directement à Paul par email. Il vous répondra sous 24 à 48h.";
       formSuccess.classList.add('show');
       form.reset();
     } else {
